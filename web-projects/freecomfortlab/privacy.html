@@ -3,6 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+    (function redirectNonKoreanTraffic() {
+      if (window.location.pathname.includes('/en/')) return;
+
+      const redirectKey = 'fcl_non_kr_redirect:' + window.location.pathname;
+      if (sessionStorage.getItem(redirectKey)) return;
+
+      fetch('https://ipapi.co/json/')
+        .then((response) => response.json())
+        .then((data) => {
+          const countryCode = (data && data.country_code ? data.country_code : '').toUpperCase();
+          if (countryCode && countryCode !== 'KR') {
+            sessionStorage.setItem(redirectKey, '1');
+            window.location.replace('en/privacy.html');
+          }
+        })
+        .catch(() => {
+          // IP lookup failed: keep current language page.
+        });
+    })();
+  </script>
+
   <title>개인정보처리방침 - FreeComfortLab</title>
   <meta name="robots" content="noindex, follow" /> <style>
     :root {

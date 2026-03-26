@@ -4,6 +4,28 @@
   <meta charset="UTF-8" />
   <title>음원 파일 → MP3 변환 – FreeComfortLab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+    (function redirectNonKoreanTraffic() {
+      if (window.location.pathname.includes('/en/')) return;
+
+      const redirectKey = 'fcl_non_kr_redirect:' + window.location.pathname;
+      if (sessionStorage.getItem(redirectKey)) return;
+
+      fetch('https://ipapi.co/json/')
+        .then((response) => response.json())
+        .then((data) => {
+          const countryCode = (data && data.country_code ? data.country_code : '').toUpperCase();
+          if (countryCode && countryCode !== 'KR') {
+            sessionStorage.setItem(redirectKey, '1');
+            window.location.replace('en/audio-to-mp3.html');
+          }
+        })
+        .catch(() => {
+          // IP lookup failed: keep current language page.
+        });
+    })();
+  </script>
+
   <meta
     name="description"
     content="m4a, wav, aac, ogg 등의 음원 파일을 고음질 MP3로 변환하는 작은 실험실입니다."
